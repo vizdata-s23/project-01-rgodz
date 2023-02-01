@@ -14,6 +14,14 @@ library(tidyverse)
 
 # Dataset
 
+```{r}
+#| label: load-data
+#| message: false
+
+matches <- read.csv("data/wcmatches.csv")
+wc <- read.csv("data/worldcups.csv")
+```
+
 A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
 
 Make sure to load the data and use inline code for some of this information.
