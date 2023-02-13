@@ -13,7 +13,7 @@ editor: visual
 library(tidyverse)
 ```
 
-# Dataset
+## Dataset
 
 ```{r}
 #| label: load-data
@@ -31,13 +31,13 @@ The `matches` dataset includes data from every single game played in the World C
 
 Our second dataset, `wc`, includes more general information about these individual World Cups. It holds a variety of variables such as which nation hosted each tournament with variable `host`, which year it was played with variable `year`, and more information on which nations placed first through fourth. The `wc` dataset has `r ncol(wc)` columns for the `r ncol(wc)` variables (which are also explained in the README.md file of our team's data folder) and has `r nrow(wc)` rows/observations representing the `r nrow(wc)` World Cups that were hosted from 1930 to 2018.
 
-# Questions
+## Questions
 
-### 1: How has the total number of goals scored in a match changed over time, and does the round in which a match is played correlate with the total number of goals scored in a match?
+#### 1: How has the total number of goals scored in a match changed over time, and does the round in which a match is played correlate with the total number of goals scored in a match?
 
-### 2: Over the course of the FIFA World Cup's tenure, which nations have had the most success aggregated across all tournaments from 1930 to 2018 when considering semi-final appearances and overall goal differential?
+#### 2: Over the course of the FIFA World Cup's tenure, which nations have had the most success aggregated across all tournaments from 1930 to 2018 when considering semi-final appearances and overall goal differential?
 
-# Analysis plan
+## Analysis plan
 
 To answer our first question, we will be looking at the variables `home_score`, `away_score`, `year`, and `stage`. We will have to create a new variable that can be called `total_goals` that is the sum of `home_score` and `away_score` since we are interested in the number of goals scored per match. Also, we will have to do some data manipulation with the `stage` variable so that all group stage games are under the same category, as they currently have different names based on the group name (i.e. "Group A", "Group B", etc.) but are all a part of the same round of a World Cup. No external data is needed for this analysis. For our visualization, our current plan is to create a violin plot for the distribution of goals scored for each year that is faceted by the round. So year will be on the x-axis and goals scored will be on the y-axis with each plot showing the distribution of the data points that came from a specific stage in the tournament. We will need to reorder the points so that the order of the faceted plots makes sense in context (such that the first plot shows the group stage distributions and the final round will be the last plot). There are multiple ways we can display the data from these three variables, however, so depending on how well the described graphic shows the relationships we are interested in we may decide to change how we plot them, but this is our current plan. Following a suggestion from one of our peer reviews, for our second visualization to answer this question we will create a
 line plot with the average number of goals scored per game as the y-axis variable and year on the x-axis, separated by which round of the tournament. The chart would have different lines colored by tournament stage and display the change in average goals scored per game over the years for each round of the World Cup. This should give us a better sense of how goals scored per match differs by year and round on average as opposed to looking at the actual distributions in the violin plots.
