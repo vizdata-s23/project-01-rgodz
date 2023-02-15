@@ -84,6 +84,31 @@ To answer our second question, we look to create two visualizations ranking part
 
 (2-3 code blocks, 2 figures, text/code comments as needed): In this section, provide the code that generates your plots. Use scale functions to provide nice axis labels and guides. You are welcome to use theme functions to customize the appearance of your plot, but you are not required to do so. All plots must be made with **ggplot2**. Do not use base R or lattice plotting functions.
 
+```{r}
+#| label: data-manipulation-2
+
+matches_q2 <- matches %>%
+    pivot_longer(
+    cols = c("home_team", "away_team"),
+    names_to = "home_away",
+    values_to = "team"
+  ) %>%
+  mutate(goal_differential = if_else(
+    home_away == "home_team",
+    home_score - away_score,
+    away_score - home_score)) %>%
+  group_by(team) %>%
+  summarise(total_goal_diff = sum(goal_differential), games = n())
+
+wc_q2 <- wc %>%
+    pivot_longer(
+    cols = c("winner", "second", "third", "fourth"),
+    names_to = "placement",
+    values_to = "team"
+  )
+  
+```
+
 ### Discussion
 
 (1-3 paragraphs): In the Discussion section, interpret the results of your analysis. Identify any trends revealed (or not revealed) by the plots. Speculate about why the data looks the way it does.
