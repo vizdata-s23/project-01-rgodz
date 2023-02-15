@@ -6,6 +6,24 @@ format: html
 editor: visual
 ---
 
+```{r}
+#| label: load-pkgs
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(dplyr)
+library(stringr)
+```
+
+```{r}
+#| label: load-data
+#| message: false
+
+matches <- read.csv("data/wcmatches.csv")
+wc <- read.csv("data/worldcups.csv")
+```
+
 ## Abstract
 
 (1 paragraph): Project abstract.
@@ -31,6 +49,16 @@ editor: visual
 To answer our first question, we will be looking at the variables `home_score`, `away_score`, `year`, and `stage`. We will have to create a new variable that can be called `total_goals` that is the sum of `home_score` and `away_score` since we are interested in the number of goals scored per match. Also, we will have to do some data manipulation with the `stage` variable so that all group stage games are under the same category, as they currently have different names based on the group name (i.e. "Group A", "Group B", etc.) but are all a part of the same round of a World Cup. No external data is needed for this analysis. For our visualization, our current plan is to create a violin plot for the distribution of goals scored for each year that is faceted by the round. So year will be on the x-axis and goals scored will be on the y-axis with each plot showing the distribution of the data points that came from a specific stage in the tournament. We will need to reorder the points so that the order of the faceted plots makes sense in context (such that the first plot shows the group stage distributions and the final round will be the last plot). There are multiple ways we can display the data from these three variables, however, so depending on how well the described graphic shows the relationships we are interested in we may decide to change how we plot them, but this is our current plan. Following a suggestion from one of our peer reviews, for our second visualization to answer this question we will create a line plot with the average number of goals scored per game as the y-axis variable and year on the x-axis, separated by which round of the tournament. The chart would have different lines colored by tournament stage and display the change in average goals scored per game over the years for each round of the World Cup. This should give us a better sense of how goals scored per match differs by year and round on average as opposed to looking at the actual distributions in the violin plots.
 
 ### Analysis
+
+```{r}
+#| label: data-manipulation
+
+matches_q1 <- matches %>%
+  mutate(stage = if_else(str_detect(stage, "Group"), "Group Stage", stage),
+         total_score = home_score + away_score)
+  
+
+```
 
 (2-3 code blocks, 2 figures, text/code comments as needed): In this section, provide the code that generates your plots. Use scale functions to provide nice axis labels and guides. You are welcome to use theme functions to customize the appearance of your plot, but you are not required to do so. All plots must be made with **ggplot2**. Do not use base R or lattice plotting functions.
 
