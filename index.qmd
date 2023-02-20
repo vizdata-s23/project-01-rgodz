@@ -14,6 +14,8 @@ editor: visual
 library(tidyverse)
 library(dplyr)
 library(stringr)
+library(ggimage)
+library(countrycode)
 ```
 
 ```{r}
@@ -64,7 +66,7 @@ matches_q1 <- matches %>%
 ```
 
 ```{r}
-#| label: Q1-viz-1
+#| label: Q1-viz
 matches_q1 |>
   group_by(year, stage) |>
   summarize(goals = mean(total_score)) |>
@@ -124,9 +126,13 @@ matches_q2 <- matches %>%
   mutate(goal_differential = if_else(
     home_away == "home_team",
     home_score - away_score,
-    away_score - home_score)) %>%
+    away_score - home_score),
+    won = if_else(winning_team == team, TRUE, FALSE, missing = FALSE)) %>%
   group_by(team) %>%
-  summarise(total_goal_diff = sum(goal_differential), games = n())
+  summarise(total_goal_diff = sum(goal_differential),
+            total_games = n(),
+            win_perc = sum(won) / total_games) |>
+  mutate(team = if_else(team == "United States", "USA", team))
 
 wc_q2 <- wc %>%
     pivot_longer(
@@ -134,7 +140,28 @@ wc_q2 <- wc %>%
     names_to = "placement",
     values_to = "team"
   )
-  
+```
+
+```{r}
+#| label: Q2-viz
+
+q2_data <- wc_q2 |>
+  left_join(matches_q2, by = 'team')
+
+q2_data |>
+  group_by(team) |>
+  summarise(appearances = n(), goal_diff = total_goal_diff) |>
+  arrange(desc(appearances)) |>
+  unique() |>
+  filter(appearances > 2) |>
+  ggplot(aes(x=appearances, y=team, fill=goal_diff)) +
+  geom_col()
+
+
+matches_q2 |>
+  ggplot(aes(x=total_goal_diff, y=win_perc, size=total_games)) +
+  geom_point()
+
 ```
 
 ### Discussion
