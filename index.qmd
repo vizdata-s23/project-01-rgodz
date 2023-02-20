@@ -54,8 +54,36 @@ To answer our first question, we will be looking at the variables `home_score`, 
 #| label: data-manipulation
 
 matches_q1 <- matches %>%
-  mutate(stage = if_else(str_detect(stage, "Group"), "Group Stage", stage),
-         total_score = home_score + away_score)
+  filter(stage != "Third place") |>
+  mutate(stage = if_else(str_detect(stage, "Group"), "Group Stage", if_else(str_detect(stage, "Final"), "Final", stage)),
+         total_score = home_score + away_score) |>
+  mutate(year_group = if_else(year <= 1962, "1930 - 1962",
+                              if_else( year <= 1990, "1966 - 1990", "1994-2018")))
+
+
+```
+
+```{r}
+#| label: Q1-viz-1
+matches_q1 |>
+  group_by(year, stage) |>
+  summarize(goals = mean(total_score)) |>
+  ggplot(aes(x = year, y = goals, color = stage)) +
+  geom_point() +
+  geom_line() +
+  theme_minimal()
+
+matches_q1 |>
+  group_by(stage, year_group) |>
+  summarize(goals = mean(total_score)) |>
+  ggplot(aes(x = stage, y = goals, fill = stage)) +
+  facet_wrap(~year_group) +
+  geom_col() +
+  theme_minimal()
+  
+  
+
+  
   
 
 ```
