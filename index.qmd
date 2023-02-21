@@ -54,15 +54,21 @@ To answer our first question, we will be looking at the variables `home_score`, 
 
 ```{r}
 #| label: data-manipulation
-
 matches_q1 <- matches %>%
-  filter(stage != "Third place") |>
-  mutate(stage = if_else(str_detect(stage, "Group"), "Group Stage", if_else(str_detect(stage, "Final"), "Final", stage)),
-         total_score = home_score + away_score) |>
-  mutate(year_group = if_else(year <= 1962, "1930 - 1962",
-                              if_else( year <= 1990, "1966 - 1990", "1994-2018")))
-
-
+  filter(stage != "Third place") |> #Third place game dropped from analysis due to teams lacking competitive edge
+  mutate(
+    stage = if_else(
+      str_detect(stage, "Group"),
+      "Group Stage",
+      if_else(str_detect(stage, "Final"), "Final", stage)
+    ),
+    total_score = home_score + away_score
+  ) |>
+  mutate(year_group = if_else(
+    year <= 1962,
+    "1930 - 1962",
+    if_else(year <= 1990, "1966 - 1990", "1994-2018")
+  ))
 ```
 
 ```{r}
@@ -73,15 +79,76 @@ matches_q1 |>
   ggplot(aes(x = year, y = goals, color = stage)) +
   geom_point() +
   geom_line() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-  panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust=1)) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank()
+  ) +
+  theme(axis.text.x = element_text(
+    angle = 50,
+    vjust = 1,
+    hjust = 1
+  )) +
   scale_x_continuous(
-    breaks = c(1930, 1934, 1938, 1942, 1946, 1950, 1954, 1958, 1962, 1966, 1970, 1974, 1978, 1982, 1986, 1990, 1994, 1998, 2002, 2006, 2010, 2014, 2018),
-    labels = c("1930", "1934", "1938", "1942", "1946", "1950", "1954", "1958", "1962", "1966", "1970", "1974", "1978", "1982", "1986", "1990", "1994", "1998", "2002", "2006", "2010", "2014", "2018")
+    breaks = c(
+      1930,
+      1934,
+      1938,
+      1942,
+      1946,
+      1950,
+      1954,
+      1958,
+      1962,
+      1966,
+      1970,
+      1974,
+      1978,
+      1982,
+      1986,
+      1990,
+      1994,
+      1998,
+      2002,
+      2006,
+      2010,
+      2014,
+      2018
+    ),
+    labels = c(
+      "1930",
+      "1934",
+      "1938",
+      "1942",
+      "1946",
+      "1950",
+      "1954",
+      "1958",
+      "1962",
+      "1966",
+      "1970",
+      "1974",
+      "1978",
+      "1982",
+      "1986",
+      "1990",
+      "1994",
+      "1998",
+      "2002",
+      "2006",
+      "2010",
+      "2014",
+      "2018"
+    )
   ) +
   theme(legend.key = element_rect(fill = "white", color = NA)) +
-  scale_color_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
+  scale_color_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
   labs(
     title = "Mean goals per match in World Cup matches over time",
     subtitle = "By stage of tournament",
@@ -93,39 +160,56 @@ matches_q1 |>
 
 ```{r}
 #| label: Q1-viz-2
-
 matches_q1 |>
   group_by(stage, year_group) |>
   summarize(goals = mean(total_score)) |>
   ggplot(aes(x = stage, y = goals, fill = stage)) +
-  facet_wrap(~year_group) +
+  facet_wrap( ~ year_group) +
   geom_col() +
   theme_minimal() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-  panel.background = element_blank()) +
-  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust=1)) +
-  scale_fill_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank()
+  ) +
+  theme(axis.text.x = element_text(
+    angle = 50,
+    vjust = 1,
+    hjust = 1
+  )) +
+  scale_fill_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
   theme(legend.position = "none") +
-  scale_x_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
+  scale_x_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
   labs(
     title = "Mean goals per match in World Cup stages",
     subtitle = "By time period",
     x = "Tournament Stage",
     y = "Mean goals per match",
     fill = "Tournament Stage"
-  ) 
-  
-  
-
+  )
 ```
-
-\
-
-(2-3 code blocks, 2 figures, text/code comments as needed): In this section, provide the code that generates your plots. Use scale functions to provide nice axis labels and guides. You are welcome to use theme functions to customize the appearance of your plot, but you are not required to do so. All plots must be made with **ggplot2**. Do not use base R or lattice plotting functions.
 
 ### Discussion
 
 (1-3 paragraphs): In the Discussion section, interpret the results of your analysis. Identify any trends revealed (or not revealed) by the plots. Speculate about why the data looks the way it does.
+
+The objective of our analysis for this first question was to gain a better understanding of the relationship (if any) between the amount of goals scored in a match and which round of the World Cup said match is played. Taking this a step further, our team thought it useful to see if there existed any trends in this relationship that may have fluctuated over time. In our analysis, we decided to discard observations pertaining to the `Third place` stage of the tournament as this match is played after the two competing countries have already been eliminated from championship contention. Thus, it is understood that both sides would be less likely to play with the same competitive edge which may perhaps skew the result. Furthermore, we were required to perform some string manipulation in order to ensure uniform labels in the `stage` variable (i.e., `Group stage`, `Final`).
+
+As displayed above in the analysis section, our team's first plot depicts a multiple line graph showing the change in mean goals per match over time by stage of the tournament (distinguished by line and point color). When our group first asked this question, we thought we might observe trends like more goals being scored in group stage matches due to higher likelihood of mismatched opponents or team's becoming more conservative in the later rounds as they face increasingly threatening opposition. However, from this first plot it is challenging to discern any concrete trends as far as goal tallies altering by tournament stage. We are able to note that the goals per match metric seems to be most consistent in the `Group stage` (teetering between 2 and 3 for much of the tournament's tenure) which makes sense as this marks the first round of the tournament including the highest amount of matches (observations) likely contributing to less standard error. If we were to remove the 2018 final from our plot, it would be more clear that goals per match across all stages of the tournament seem to be decreasing overall from 1930 to 2018. The 2018 final marks the exceptionally high scoring and not so back and forth match between France and Croatia which ended in a 4-2 French victory.
+
+The second visualization which we have used to answer our question
 
 ## Question 2: Title that relates to the question you're answering
 
