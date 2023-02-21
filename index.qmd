@@ -81,6 +81,7 @@ matches_q1 |>
     labels = c("1930", "1934", "1938", "1942", "1946", "1950", "1954", "1958", "1962", "1966", "1970", "1974", "1978", "1982", "1986", "1990", "1994", "1998", "2002", "2006", "2010", "2014", "2018")
   ) +
   theme(legend.key = element_rect(fill = "white", color = NA)) +
+  scale_color_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
   labs(
     title = "Mean goals per match in World Cup matches over time",
     subtitle = "By stage of tournament",
@@ -103,7 +104,9 @@ matches_q1 |>
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
   panel.background = element_blank()) +
   theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust=1)) +
+  scale_fill_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
   theme(legend.position = "none") +
+  scale_x_discrete(limits = c("Group Stage", "Round of 16", "Quarterfinals", "Semifinals", "Final")) +
   labs(
     title = "Mean goals per match in World Cup stages",
     subtitle = "By time period",
