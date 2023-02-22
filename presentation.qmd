@@ -1,7 +1,7 @@
 ---
-title: "Project title"
+title: "Analyzing World Cup Goals"
 subtitle: "STA/ISS 313 - Spring 2023 - Project 1"
-author: "Team Name"
+author: "RGodz"
 title-slide-attributes:
   data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
   data-background-size: stretch
@@ -22,6 +22,10 @@ library(tidyverse)
 library(tidymodels)
 library(palmerpenguins)
 library(gt)
+library(dplyr)
+library(stringr)
+library(ggimage)
+library(countrycode)
 ```
 
 ```{r}
@@ -45,49 +49,17 @@ knitr::opts_chunk$set(
 # Load your data here
 ```
 
-# Using Quarto for presentations
+## Introduction
 
-## Quarto
+-   We used FIFA World Cup data for our investigation and broke the data up into two datasets named `matches` and `wc` .
 
--   The presentation is created using the Quarto CLI
+-   The `matches` dataset includes data from every game played in the history of the World Cup. Its variables include which teams played in a match and its outcome.
 
--   `##` sets the start of a new slide
+-   The `wc` dataset includes general information about each individual World Cup. It holds variables such as the host of each tournament, the year it was played in, and which nations placed first through fourth.
 
-## Layouts
+## Question 1: How has the total number of goals scored in a match changed over time, and does the round in which a match is played correlate with the total number of goals scored in a match?
 
-You can use plain text
-
--   or bullet points
-
-::: columns
-::: {.column width="50%"}
-or text in two columns $^*$
-:::
-
-::: {.column width="50%"}
--   like
--   this
-:::
-:::
-
-### 
-
-::: aside
-\[\*\] And add footnotes
-:::
-
-## Code
-
-```{r}
-#| label: boring-regression
-
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
-```
-
-## Plots
+## Plot #1
 
 ```{r}
 #| label: recode-species
@@ -96,91 +68,195 @@ glance(model)
 # In this chunk I'm doing a bunch of analysis that I don't want to present 
 # in my slides. But I need the resulting data frame for a plot I want to present.
 
-penguins_modified <- penguins %>%
-  mutate(species = fct_other(species, keep = "Adelie"))
+# matches_q1 <- matches %>%
+#   filter(stage != "Third place") |> #Third place game dropped from analysis due to teams lacking competitive edge
+#   mutate(
+#     stage = if_else(
+#       str_detect(stage, "Group"),
+#       "Group Stage",
+#       if_else(str_detect(stage, "Final"), "Final", stage)
+#     ),
+#     total_score = home_score + away_score
+#   ) |>
+#   mutate(year_group = if_else(
+#     year <= 1962,
+#     "1930 - 1962",
+#     if_else(year <= 1990, "1966 - 1990", "1994-2018")
+#   ))
+# 
+# matches_q1 |>
+#   group_by(year, stage) |>
+#   summarize(goals = mean(total_score)) |>
+#   ggplot(aes(x = year, y = goals, color = stage)) +
+#   geom_point() +
+#   geom_line() +
+#   theme(
+#     panel.grid.major = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.background = element_blank()
+#   ) +
+#   theme(axis.text.x = element_text(
+#     angle = 50,
+#     vjust = 1,
+#     hjust = 1
+#   )) +
+#   scale_x_continuous(
+#     breaks = c(
+#       1930,
+#       1934,
+#       1938,
+#       1950,
+#       1954,
+#       1958,
+#       1962,
+#       1966,
+#       1970,
+#       1974,
+#       1978,
+#       1982,
+#       1986,
+#       1990,
+#       1994,
+#       1998,
+#       2002,
+#       2006,
+#       2010,
+#       2014,
+#       2018
+#     ),
+#     labels = c(
+#       "1930",
+#       "1934",
+#       "1938",
+#       "1950",
+#       "1954",
+#       "1958",
+#       "1962",
+#       "1966",
+#       "1970",
+#       "1974",
+#       "1978",
+#       "1982",
+#       "1986",
+#       "1990",
+#       "1994",
+#       "1998",
+#       "2002",
+#       "2006",
+#       "2010",
+#       "2014",
+#       "2018"
+#     )
+#   ) +
+#   theme(legend.key = element_rect(fill = "white", color = NA)) +
+#   scale_color_discrete(limits = c(
+#     "Group Stage",
+#     "Round of 16",
+#     "Quarterfinals",
+#     "Semifinals",
+#     "Final"
+#   )) +
+#   labs(
+#     title = "Mean goals per match in World Cup matches over time",
+#     subtitle = "By stage of tournament",
+#     x = "Year",
+#     y = "Mean goals per match",
+#     color = "Tournament stage"
+#   )
 ```
+
+## Plot #2
 
 ```{r}
-#| label: plot-penguins
-#| echo: false
-#| warning: false
-#| fig-alt: |
-#|   Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all 
-#|   the others combined together. There is a relatively strong, positive 
-#|   relationship between the two variables. The Adelie penguins are clustered 
-#|   together but they don't exhibit a different trend than the rest of the 
-#|   penguins.
-
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
-
-ggplot(
-  penguins_modified, 
-  aes(x = flipper_length_mm, y = body_mass_g, color = species)
-  ) +
-  geom_point() + 
-  theme_minimal()
+# matches_q1 |>
+#   group_by(stage, year_group) |>
+#   summarize(goals = mean(total_score)) |>
+#   ggplot(aes(x = stage, y = goals, fill = stage)) +
+#   facet_wrap( ~ year_group) +
+#   geom_col() +
+#   theme_minimal() +
+#   theme(
+#     panel.grid.major = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.background = element_blank()
+#   ) +
+#   theme(axis.text.x = element_text(
+#     angle = 50,
+#     vjust = 1,
+#     hjust = 1
+#   )) +
+#   scale_fill_discrete(limits = c(
+#     "Group Stage",
+#     "Round of 16",
+#     "Quarterfinals",
+#     "Semifinals",
+#     "Final"
+#   )) +
+#   theme(legend.position = "none") +
+#   scale_x_discrete(limits = c(
+#     "Group Stage",
+#     "Round of 16",
+#     "Quarterfinals",
+#     "Semifinals",
+#     "Final"
+#   )) +
+#   labs(
+#     title = "Mean goals per match in World Cup stages",
+#     subtitle = "By time period",
+#     x = "Tournament Stage",
+#     y = "Mean goals per match",
+#     fill = "Tournament Stage"
+#   )
 ```
 
-## Plot and text
+## Discussion
 
-::: columns
-::: {.column width="50%"}
--   Some text
--   goes here
-:::
+-   It is challenging to discern any concrete trends as far as goal tallies altering by tournament stage.
 
-::: {.column width="50%"}
+-   We are able to note that the goals per match metric seems to be most consistent in the `Group stage` (teetering between 2 and 3 for much of the tournament's tenure) which makes sense as this marks the first round of the tournament including the highest amount of matches (observations) which contributes to less variability.
+
+## Question 2: Over the course of the FIFA World Cup's tenure, which nations have had the most success aggregated across all tournaments from 1930 to 2018 when considering semi-final appearances and overall goal differential?
+
+## Plot #1
+
 ```{r}
-#| warning: false
-#| out-width: "100%"
-#| fig-width: 4
-#| echo: false
+# matches_q2 <- matches %>%
+#     pivot_longer(
+#     cols = c("home_team", "away_team"),
+#     names_to = "home_away",
+#     values_to = "team"
+#   ) %>%
+#   mutate(goal_differential = if_else(
+#     home_away == "home_team",
+#     home_score - away_score,
+#     away_score - home_score),
+#     won = if_else(winning_team == team, TRUE, FALSE, missing = FALSE)) %>%
+#   group_by(team) %>%
+#   summarise(total_goal_diff = sum(goal_differential),
+#             total_games = n(),
+#             win_perc = sum(won) / total_games) |>
+#   mutate(team = if_else(team == "United States", "USA", team))
+# 
+# wc_q2 <- wc %>%
+#     pivot_longer(
+#     cols = c("winner", "second", "third", "fourth"),
+#     names_to = "placement",
+#     values_to = "team"
+#   )
 
-# See how I changed out-width and fig-width from defaults
-# to make the figure bigger
 
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
 ```
-:::
-:::
 
-# A new section...
-
-## Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+## Plot #2
 
 ```{r}
-#| label: penguins-table
 
-gt(head(penguins))
 ```
 
-## Images
+## Discussion
 
-![Image credit: Danielle Navarro, Percolate.](images/watercolour_sys02_img34_teacup-ocean.png)
+-   We used FIFA World Cup data for our investigation and broke the data up into two datasets named `matches` and `wc` .
 
-## Math Expressions {.smaller}
+-   The `matches` dataset includes data from every game played in the history of the World Cup. Its variables include which teams played in a match and its outcome.
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. \$\alpha+\beta\$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
-
-    $$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
-Limitations:
-
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-2.  There should not be spaces after the opening `$` or before the closing `$`.
-
-# Wrap up
-
-## Feeling adventurous?
-
--   You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
--   But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.
+-   The `wc` dataset includes general information about each individual World Cup. It holds variables such as the host of each tournament, the year it was played in, and which nations placed first through fourth.
