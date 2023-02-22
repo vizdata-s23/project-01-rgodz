@@ -273,8 +273,19 @@ q2_data |>
   arrange(desc(appearances)) |>
   unique() |>
   filter(appearances > 2) |>
-  ggplot(aes(x=appearances, y=team, fill=goal_diff)) +
-  geom_col()
+  ggplot(aes(x=appearances, y=reorder(team, goal_diff), fill=goal_diff)) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "Goal differential has a positive correlation
+       with final four appearances",
+       subtitle = "Color scaled by goal differential (listed after each bar)",
+       x = "Final four appearances",
+       y = "") +
+  theme(plot.subtitle = element_text(size = 0.1)) +
+  theme_minimal() +
+  scale_fill_gradient2(low = "lightblue", mid = "blue", high = "darkblue", midpoint = 50) +
+  geom_text(aes(x=appearances + 0.5, y=team, label=goal_diff), size=3, color="black", fontface='bold')
+
+
 
 
 matches_q2 |>
