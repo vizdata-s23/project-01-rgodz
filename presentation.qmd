@@ -244,13 +244,74 @@ knitr::opts_chunk$set(
 #     values_to = "team"
 #   )
 
-
+# q2_data <- wc_q2 |>
+#   left_join(matches_q2, by = 'team')
+# 
+# q2_data |>
+#   group_by(team) |>
+#   summarise(appearances = n(), goal_diff = total_goal_diff) |>
+#   arrange(desc(appearances)) |>
+#   # Use unique to get only one row for each team that has the info we want to plot
+#   unique() |>
+#   # Only plot teams who have made more than one semifinal to not overcrowd the plot
+#   filter(appearances > 2) |>
+#   ggplot(aes(x=appearances, y=reorder(team, goal_diff), fill=goal_diff)) +
+#   geom_col(show.legend = FALSE) +
+#   labs(title = "Goal differential has a positive correlation
+#        with final four appearances",
+#        subtitle = "Color scaled by goal differential (listed after each bar)",
+#        x = "Final four appearances",
+#        y = "") +
+#   theme_minimal() +
+#   scale_fill_gradient2(low = "lightblue", mid = "blue", high = "darkblue", midpoint = 50) +
+#   # Add in goal differential numbers
+#   geom_text(aes(x=appearances + 0.5, y=team, label=goal_diff), size=3, color="black", fontface='bold') +
+#   scale_x_continuous(
+#     breaks = c(
+#       3,
+#       4,
+#       5,
+#       6,
+#       7,
+#       8,
+#       9,
+#       10,
+#       11
+#     ),
+#     labels = c(
+#       "3",
+#       "4",
+#       "5",
+#       "6",
+#       "7",
+#       "8",
+#       "9",
+#       "10",
+#       "11"
+#     )
+#   ) +
+#     theme(plot.subtitle = element_text(size = 10),
+#         panel.grid.minor = element_blank(),
+#         panel.grid.major.y = element_blank())
 ```
 
 ## Plot #2
 
 ```{r}
-
+# matches_q2 |>
+#   # Remove teams who have not played in at least two tournaments
+#   filter(total_games > 6) |>
+#   ggplot(aes(x=total_goal_diff, y=win_perc, size=total_games, color=total_games)) +
+#   geom_point(show.legend = FALSE) +
+#   geom_text_repel(aes(label=ifelse(total_games >= 40 | total_goal_diff >=25, team, "")), size=3, fontface='bold', color="forestgreen") +
+#   labs(title="Strong positive correlation between \n goal differential and winning percentage",
+#        x="Total Goal Differential",
+#        y="Winning Percentage",
+#        size="Total Games Played",
+#        subtitle="Size and color by total games played") +
+#   theme_minimal() +
+#   scale_color_gradient2(low = "lightblue", mid = "blue", high = "darkblue", midpoint = 50) +
+#   scale_y_continuous(labels = percent_format())
 ```
 
 ## Discussion
