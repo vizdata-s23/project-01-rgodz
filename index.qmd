@@ -304,6 +304,7 @@ q2_data |>
     y = ""
   ) +
   theme_minimal() +
+  # Found scale_fill_gradient2 using chatGPT
   scale_fill_gradient2(
     low = "lightblue",
     mid = "blue",
@@ -375,6 +376,7 @@ matches_q2 |>
     subtitle = "Size and color by total games played"
   ) +
   theme_minimal() +
+  # Found scale_color_gradient2 using chatGPT
   scale_color_gradient2(
     low = "lightblue",
     mid = "blue",
