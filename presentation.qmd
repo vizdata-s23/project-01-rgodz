@@ -18,14 +18,12 @@ execute:
 
 # Add any additional packages you need to this chunk
 # Remove any packages from this list that you're not using
+
 library(tidyverse)
-library(tidymodels)
-library(palmerpenguins)
-library(gt)
 library(dplyr)
 library(stringr)
-library(ggimage)
-library(countrycode)
+library(ggrepel)
+library(scales)
 ```
 
 ```{r}
@@ -45,175 +43,179 @@ knitr::opts_chunk$set(
 ```{r}
 #| label: load-data
 #| include: false
+#| message: false
 
-# Load your data here
+matches <- read.csv("data/wcmatches.csv")
+wc <- read.csv("data/worldcups.csv")
 ```
 
 ## Introduction
 
--   We used FIFA World Cup data for our investigation and broke the data up into two datasets named `matches` and `wc` .
+-   Our investigation utilizes FIFA World Cup data including two datasets titled `matches` and `wc`
 
--   The `matches` dataset includes data from every game played in the history of the World Cup. Its variables include which teams played in a match and its outcome.
+-   The `matches` dataset includes data from every World Cup game from 1930 - 2018 and its variables reflect which teams played in a match and its outcome
 
--   The `wc` dataset includes general information about each individual World Cup. It holds variables such as the host of each tournament, the year it was played in, and which nations placed first through fourth.
+-   The `wc` dataset includes general information about each individual World Cup with variables like tournament host, year, and which nations placed first through fourth
 
-## Question 1: How has the total number of goals scored in a match changed over time, and does the round in which a match is played correlate with the total number of goals scored in a match?
+## Question 1: How has aggregate goal count per match changed over time, and does the round in which a match is played correlate with this metric?
 
 ## Plot #1
 
 ```{r}
-#| label: recode-species
+#| label: q1-pres-1
 #| echo: false
 
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
+matches_q1 <- matches %>%
+  filter(stage != "Third place") |> #Third place game dropped from analysis due to teams lacking competitive edge
+  mutate(
+    stage = if_else(
+      str_detect(stage, "Group"),
+      "Group Stage",
+      if_else(str_detect(stage, "Final"), "Final", stage)
+    ),
+    total_score = home_score + away_score
+  ) |>
+  mutate(year_group = if_else(
+    year <= 1962,
+    "1930 - 1962",
+    if_else(year <= 1990, "1966 - 1990", "1994-2018")
+  ))
 
-# matches_q1 <- matches %>%
-#   filter(stage != "Third place") |> #Third place game dropped from analysis due to teams lacking competitive edge
-#   mutate(
-#     stage = if_else(
-#       str_detect(stage, "Group"),
-#       "Group Stage",
-#       if_else(str_detect(stage, "Final"), "Final", stage)
-#     ),
-#     total_score = home_score + away_score
-#   ) |>
-#   mutate(year_group = if_else(
-#     year <= 1962,
-#     "1930 - 1962",
-#     if_else(year <= 1990, "1966 - 1990", "1994-2018")
-#   ))
-# 
-# matches_q1 |>
-#   group_by(year, stage) |>
-#   summarize(goals = mean(total_score)) |>
-#   ggplot(aes(x = year, y = goals, color = stage)) +
-#   geom_point() +
-#   geom_line() +
-#   theme(
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.background = element_blank()
-#   ) +
-#   theme(axis.text.x = element_text(
-#     angle = 50,
-#     vjust = 1,
-#     hjust = 1
-#   )) +
-#   scale_x_continuous(
-#     breaks = c(
-#       1930,
-#       1934,
-#       1938,
-#       1950,
-#       1954,
-#       1958,
-#       1962,
-#       1966,
-#       1970,
-#       1974,
-#       1978,
-#       1982,
-#       1986,
-#       1990,
-#       1994,
-#       1998,
-#       2002,
-#       2006,
-#       2010,
-#       2014,
-#       2018
-#     ),
-#     labels = c(
-#       "1930",
-#       "1934",
-#       "1938",
-#       "1950",
-#       "1954",
-#       "1958",
-#       "1962",
-#       "1966",
-#       "1970",
-#       "1974",
-#       "1978",
-#       "1982",
-#       "1986",
-#       "1990",
-#       "1994",
-#       "1998",
-#       "2002",
-#       "2006",
-#       "2010",
-#       "2014",
-#       "2018"
-#     )
-#   ) +
-#   theme(legend.key = element_rect(fill = "white", color = NA)) +
-#   scale_color_discrete(limits = c(
-#     "Group Stage",
-#     "Round of 16",
-#     "Quarterfinals",
-#     "Semifinals",
-#     "Final"
-#   )) +
-#   labs(
-#     title = "Mean goals per match in World Cup matches over time",
-#     subtitle = "By stage of tournament",
-#     x = "Year",
-#     y = "Mean goals per match",
-#     color = "Tournament stage"
-#   )
+matches_q1 |>
+  group_by(year, stage) |>
+  summarize(goals = mean(total_score)) |>
+  ggplot(aes(x = year, y = goals, color = stage)) +
+  geom_point() +
+  geom_line() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank()
+  ) +
+  theme(axis.text.x = element_text(
+    angle = 50,
+    vjust = 1,
+    hjust = 1
+  )) +
+  scale_x_continuous(
+    breaks = c(
+      1930,
+      1934,
+      1938,
+      1950,
+      1954,
+      1958,
+      1962,
+      1966,
+      1970,
+      1974,
+      1978,
+      1982,
+      1986,
+      1990,
+      1994,
+      1998,
+      2002,
+      2006,
+      2010,
+      2014,
+      2018
+    ),
+    labels = c(
+      "1930",
+      "1934",
+      "1938",
+      "1950",
+      "1954",
+      "1958",
+      "1962",
+      "1966",
+      "1970",
+      "1974",
+      "1978",
+      "1982",
+      "1986",
+      "1990",
+      "1994",
+      "1998",
+      "2002",
+      "2006",
+      "2010",
+      "2014",
+      "2018"
+    )
+  ) +
+  theme(legend.key = element_rect(fill = "white", color = NA)) +
+  scale_color_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
+  labs(
+    title = "Mean goals per match in World Cup matches over time",
+    subtitle = "By stage of tournament",
+    x = "Year",
+    y = "Mean goals per match",
+    color = "Tournament stage"
+  )
 ```
 
 ## Plot #2
 
 ```{r}
-# matches_q1 |>
-#   group_by(stage, year_group) |>
-#   summarize(goals = mean(total_score)) |>
-#   ggplot(aes(x = stage, y = goals, fill = stage)) +
-#   facet_wrap( ~ year_group) +
-#   geom_col() +
-#   theme_minimal() +
-#   theme(
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.background = element_blank()
-#   ) +
-#   theme(axis.text.x = element_text(
-#     angle = 50,
-#     vjust = 1,
-#     hjust = 1
-#   )) +
-#   scale_fill_discrete(limits = c(
-#     "Group Stage",
-#     "Round of 16",
-#     "Quarterfinals",
-#     "Semifinals",
-#     "Final"
-#   )) +
-#   theme(legend.position = "none") +
-#   scale_x_discrete(limits = c(
-#     "Group Stage",
-#     "Round of 16",
-#     "Quarterfinals",
-#     "Semifinals",
-#     "Final"
-#   )) +
-#   labs(
-#     title = "Mean goals per match in World Cup stages",
-#     subtitle = "By time period",
-#     x = "Tournament Stage",
-#     y = "Mean goals per match",
-#     fill = "Tournament Stage"
-#   )
+#| label: q1-pres-2
+#| echo: false
+
+matches_q1 |>
+  group_by(stage, year_group) |>
+  summarize(goals = mean(total_score)) |>
+  ggplot(aes(x = stage, y = goals, fill = stage)) +
+  facet_wrap( ~ year_group) +
+  geom_col() +
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank()
+  ) +
+  theme(axis.text.x = element_text(
+    angle = 50,
+    vjust = 1,
+    hjust = 1
+  )) +
+  scale_fill_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
+  theme(legend.position = "none") +
+  scale_x_discrete(limits = c(
+    "Group Stage",
+    "Round of 16",
+    "Quarterfinals",
+    "Semifinals",
+    "Final"
+  )) +
+  labs(
+    title = "Mean goals per match in World Cup stages",
+    subtitle = "By time period",
+    x = "Tournament Stage",
+    y = "Mean goals per match",
+    fill = "Tournament Stage"
+  )
 ```
 
 ## Discussion
 
--   It is challenging to discern any concrete trends as far as goal tallies altering by tournament stage.
+-   It is challenging to discern any concrete trends as far as goal tally having a strong relationship with tournament stage
 
--   We are able to note that the goals per match metric seems to be most consistent in the `Group stage` (teetering between 2 and 3 for much of the tournament's tenure) which makes sense as this marks the first round of the tournament including the highest amount of matches (observations) which contributes to less variability.
+-   Goals per match seem to be most consistent in the `Group stage` (2 to 3 goals per match) which makes sense given it sees the highest amount of matches
+
+-   Overall, it seems that goals per match have declined over time with countries recently becoming more conservative in later rounds
 
 ## Question 2: Over the course of the FIFA World Cup's tenure, which nations have had the most success aggregated across all tournaments from 1930 to 2018 when considering semi-final appearances and overall goal differential?
 
