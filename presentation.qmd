@@ -59,7 +59,7 @@ wc <- read.csv("data/worldcups.csv")
 
 ## Question 1: How has aggregate goal count per match changed over time, and does the round in which a match is played correlate with this metric?
 
-## Plot #1
+## Goals per match over time
 
 ```{r}
 #| label: q1-pres-1
@@ -162,7 +162,7 @@ matches_q1 |>
   )
 ```
 
-## Plot #2
+## Goals per match by tournament stage
 
 ```{r}
 #| label: q1-pres-2
