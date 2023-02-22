@@ -1,9 +1,9 @@
 ---
-title: "Analyzing World Cup Goals"
+title: "World Cup Scoring Trends & Rankings"
 subtitle: "STA/ISS 313 - Spring 2023 - Project 1"
 author: "RGodz"
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: images/trophy2.jpeg
   data-background-size: stretch
   data-slide-number: none
 format: revealjs
@@ -220,7 +220,7 @@ matches_q1 |>
 
 ## Question 2: Over the course of the FIFA World Cup's tenure, which nations have had the most success aggregated across all tournaments from 1930 to 2018 when considering semi-final appearances and overall goal differential?
 
-## Power rankings: semifinal appearances
+## Rankings: semifinal appearances
 
 ```{r}
 #| label: q2-pres-1
@@ -351,6 +351,6 @@ matches_q2 |>
 
 ## Discussion
 
--   The first plot shows that the overall trend is that total goal differential and final four appearances are highly correlated
+-   The first plot demonstrates that total goal differential and final four appearances have a strong relationship
 
--   Our analysis of our second research question has given us insight into which teams consistently perform the best in the history of the World Cup, that being Brazil, Hungary, and Mexico.
+-   This research question has given us insight into which teams consistently perform the best in the history of the World Cup, that being Brazil, Germany, and Italy
