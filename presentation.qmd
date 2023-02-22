@@ -351,8 +351,6 @@ matches_q2 |>
 
 ## Discussion
 
--   We used FIFA World Cup data for our investigation and broke the data up into two datasets named `matches` and `wc` .
+-   The first plot shows that the overall trend is that total goal differential and final four appearances are highly correlated
 
--   The `matches` dataset includes data from every game played in the history of the World Cup. Its variables include which teams played in a match and its outcome.
-
--   The `wc` dataset includes general information about each individual World Cup. It holds variables such as the host of each tournament, the year it was played in, and which nations placed first through fourth.
+-   Our analysis of our second research question has given us insight into which teams consistently perform the best in the history of the World Cup, that being Brazil, Hungary, and Mexico.
