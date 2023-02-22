@@ -36,9 +36,9 @@ wc <- read.csv("data/worldcups.csv")
 
 (1-2 paragraphs): Brief introduction to the dataset. You may repeat some of the information about the dataset provided in the introduction to the dataset on the TidyTuesday repository, paraphrasing on your own terms. Imagine that your project is a standalone document and the grader has no prior knowledge of the dataset.
 
-## Question 1: Title that relates to the question you're answering
+## Question 1: Goals per match by tournament stage over time
 
-### Introduction
+## Introduction
 
 (1-2 paragraphs): Introduction to the question and what parts of the dataset are necessary to answer the question. Also discuss why you're interested in this question.
 
@@ -94,8 +94,6 @@ matches_q1 |>
       1930,
       1934,
       1938,
-      1942,
-      1946,
       1950,
       1954,
       1958,
@@ -119,8 +117,6 @@ matches_q1 |>
       "1930",
       "1934",
       "1938",
-      "1942",
-      "1946",
       "1950",
       "1954",
       "1958",
@@ -205,11 +201,11 @@ matches_q1 |>
 
 (1-3 paragraphs): In the Discussion section, interpret the results of your analysis. Identify any trends revealed (or not revealed) by the plots. Speculate about why the data looks the way it does.
 
-The objective of our analysis for this first question was to gain a better understanding of the relationship (if any) between the amount of goals scored in a match and which round of the World Cup said match is played. Taking this a step further, our team thought it useful to see if there existed any trends in this relationship that may have fluctuated over time. In our analysis, we decided to discard observations pertaining to the `Third place` stage of the tournament as this match is played after the two competing countries have already been eliminated from championship contention. Thus, it is understood that both sides would be less likely to play with the same competitive edge which may perhaps skew the result. Furthermore, we were required to perform some string manipulation in order to ensure uniform labels in the `stage` variable (i.e., `Group stage`, `Final`).
+The objective of our analysis for this first question was to gain a better understanding of the relationship (if any) between the amount of goals scored in a match and which round of the World Cup said match is played. Taking this a step further, our team thought it useful to see if there existed any trends in this relationship that may have fluctuated over time. In our analysis, we decided to discard observations pertaining to the `Third place` stage of the tournament as this match is played after the two competing countries have already been eliminated from championship contention. Thus, it is understood that both sides would be less likely to play with the same competitive edge in a consolation game which may skew the result. Furthermore, we were required to perform some string manipulation in order to ensure uniform labels in the `stage` variable (i.e., `Group stage`, `Final`).
 
-As displayed above in the analysis section, our team's first plot depicts a multiple line graph showing the change in mean goals per match over time by stage of the tournament (distinguished by line and point color). When our group first asked this question, we thought we might observe trends like more goals being scored in group stage matches due to higher likelihood of mismatched opponents or team's becoming more conservative in the later rounds as they face increasingly threatening opposition. However, from this first plot it is challenging to discern any concrete trends as far as goal tallies altering by tournament stage. We are able to note that the goals per match metric seems to be most consistent in the `Group stage` (teetering between 2 and 3 for much of the tournament's tenure) which makes sense as this marks the first round of the tournament including the highest amount of matches (observations) likely contributing to less standard error. If we were to remove the 2018 final from our plot, it would be more clear that goals per match across all stages of the tournament seem to be decreasing overall from 1930 to 2018. The 2018 final marks the exceptionally high scoring and not so back and forth match between France and Croatia which ended in a 4-2 French victory.
+As displayed above in the analysis section, our team's first plot depicts a multiple line graph showing the change in mean goals per match over time by stage of the tournament (distinguished by line and point color). When our group first asked this question, we thought we might observe trends like more goals being scored in group stage matches due to higher likelihood of mismatched opponents or team's becoming more conservative in the later rounds as they face increasingly threatening opposition. However, from this first plot it is challenging to discern any concrete trends as far as goal tallies altering by tournament stage. We are able to note that the goals per match metric seems to be most consistent in the `Group stage` (teetering between 2 and 3 for much of the tournament's tenure) which makes sense as this marks the first round of the tournament including the highest amount of matches (observations) which contributes to less variability. If we were to remove the 2018 final from our plot, it would be more clear that goals per match across all stages of the tournament seem to be decreasing overall from 1930 to 2018. The 2018 final marks the exceptionally high scoring and not so back and forth match between France and Croatia which ended in a 4-2 French victory. It should be noted that the tournament's format has experienced changes throughout its history thus not every year contains an observation for all five stages. For example, the 1930 tournament featured only 13 countries while the 1974 and 1978 tournaments incorporated a unique format with 16 teams and two group stages. The years of 1942 and 1946 are void and left off of our plot as the tournament was cancelled due to World War II.
 
-The second visualization which we have used to answer our question
+The second visualization which we have used to answer our question is a group of bar charts faceted by time period using a variable we created called `year_group`. The variable `year_group` chronologically divides the observations into three eras, each made up of seven World Cups, with the intention of depicting scoring trends in a more clustered fashion. When the data is visualized in this fashion, it becomes more clear that overall goals per match seems to be on a gradual decline from time period to time period. The tournaments from 1930 - 1962 appear to have had the highest goals per match of the three eras with the round of 16, semifinal, and final all seeing an entertaining five goals per match. Tournaments held between 1966 - 1990 saw a drop off in goals per match in each respective stage in comparison with earlier editions of the Cup. We are able to see that during this time period, goals per match increased as teams got deeper into the tournament as seen from the steady incline from the group stage to the final. More recent installments of the World Cup, as included in the 1994 - 2018 time period, also show a decline in goals per match in almost every single stage. It is also apparent that goals per match steadily decreased as teams made it deeper into the tournament with the later rounds seeing fewer goals compared with their earlier counterparts. This visualization may lead us to believe that teams used to be more attacking-oriented but have adjusted their schemes over time to be more conservative and defensively-focused. Of course, we are unable to necessarily make any conclusions just yet as to whether that is the truth or not, but this visualization does lead us to believe that goals per match have declined over time and that defenses may have become more talented or the pace of the game has shifted over time.
 
 ## Question 2: Title that relates to the question you're answering
 
